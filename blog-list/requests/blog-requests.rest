@@ -6,8 +6,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 { 
-    "title": "te amo lu",
-    "author":"jose",
-    "url": "iloveyousomuch.com",
-    "likes": 10000
+    "title": "pruebas",
+    "author":"folagor",
+    "url": "quintis.com",
+    "likes": 66453
 }

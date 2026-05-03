@@ -1,4 +1,9 @@
 const logger = require('./logger')
+const morgan = require('morgan')
+
+morgan.token('body', (req) => {
+  return JSON.stringify(req.body)
+})
 
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: 'unknown endpoint' })
@@ -17,7 +22,7 @@ const errorHandler = (error, request, response, next) => {
 }
 
 module.exports = {
-  requestLogger,
+  morgan,
   unknownEndpoint,
   errorHandler
 }
