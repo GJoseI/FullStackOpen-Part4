@@ -1,4 +1,13 @@
 ###Get all blogs
 GET http://localhost:3003/api/blogs
 
-###Add blog POST http://localhost:3003/api/blogs Content-Type: application/json{ "title": "quiero keke","author":"el gordo vende humo","url": "quierokeke.com","likes": 5}
+###Add blog 
+POST http://localhost:3003/api/blogs 
+Content-Type: application/json
+
+{ 
+    "title": "te amo lu",
+    "author":"jose",
+    "url": "iloveyousomuch.com",
+    "likes": 10000
+}
