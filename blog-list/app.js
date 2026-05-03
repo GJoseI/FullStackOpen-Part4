@@ -17,4 +17,13 @@ mongoose
   .catch((error) => {
     logger.error('error connection to MongoDB:', error.message)
   })
+
 app.use(express.json())
+app.use(middleware.morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+app.use('/api/blogs', blogsRouter)
+
+app.use(middleware.unknownEndpoint)
+app.use(middleware.errorHandler)
+
+module.exports = app
