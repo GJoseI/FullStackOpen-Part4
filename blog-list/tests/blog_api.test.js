@@ -20,6 +20,14 @@ test('all blogs are returned', async () => {
   assert.strictEqual(response.body.length, helper.initialBlogs.length)
 })
 
+test('id property is named correctly', async () => {
+  const blogs = await helper.blogsInDb()
+  const blogToView = blogs[0]
+  const result = blogToView.hasOwnProperty('id')
+
+  assert(result)
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
