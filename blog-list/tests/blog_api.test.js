@@ -50,6 +50,23 @@ test('a valid blog can be added ', async () => {
   assert(title.includes('Go To Statement Considered Harmful'))
 })
 
+test('blog with no likes defaults to 0 ', async () => {
+  const newBlog = {
+    title: 'Go To Statement Considered Harmful',
+    author: 'Edsger W. Dijkstra',
+    url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+  const likes = blogsAtEnd.map(n => n.likes)
+
+  assert(title.includes(0))
+})
+
 after(async () => {
   await mongoose.connection.close()
 })
