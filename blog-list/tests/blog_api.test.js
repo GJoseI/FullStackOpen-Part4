@@ -52,8 +52,8 @@ test('a valid blog can be added ', async () => {
 
 test('blog with no likes defaults to 0 ', async () => {
   const newBlog = {
-    title: 'Go To Statement Considered Harmful',
-    author: 'Edsger W. Dijkstra',
+    title: 'Quiero keke',
+    author: 'La Cobra',
     url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
   }
 
@@ -62,9 +62,10 @@ test('blog with no likes defaults to 0 ', async () => {
     .send(newBlog)
     .expect(201)
     .expect('Content-Type', /application\/json/)
-  const likes = blogsAtEnd.map(n => n.likes)
+  const blogsAtEnd = await helper.blogsInDb()
+  const lastLikes = blogsAtEnd[helper.initialBlogs.length].likes
 
-  assert(title.includes(0))
+  assert.deepStrictEqual(lastLikes, 0)
 })
 
 after(async () => {
