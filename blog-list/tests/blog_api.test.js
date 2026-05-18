@@ -31,8 +31,8 @@ describe('when there is initially some notes saved', () => {
 
   test('a valid blog can be added ', async () => {
     const newBlog = {
-      title: 'Go To Statement Considered Harmful',
-      author: 'Edsger W. Dijkstra',
+      title: 'Blog añadido en test',
+      author: 'Jose',
       url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
       likes: 5,
     }
@@ -48,7 +48,7 @@ describe('when there is initially some notes saved', () => {
 
     const title = blogsAtEnd.map(n => n.title)
 
-    assert(title.includes('Go To Statement Considered Harmful'))
+    assert(title.includes('Blog añadido en test'))
   })
 
   test('blog with no likes defaults to 0 ', async () => {
@@ -99,16 +99,19 @@ describe('when there is initially some notes saved', () => {
   test('a valid blog can be updated', async () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToUpdate = blogsAtStart[0]
+    const updatedBlog = {
+      likes: 25
+    }
 
 
     await api
-      .put('/api/blogs')
-      .send(blogToUpdate)
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
-    assert.strictEqual(blogsAtStart[0].likes, 25)
+    assert.strictEqual(blogsAtEnd[0].likes, 25)
   })
 
   describe('deletion of a blog', () => {
