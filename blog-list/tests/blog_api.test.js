@@ -185,6 +185,10 @@ describe('when there is initially one user in db', () => {
 
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
+
+  test('creation fails with proper statuscode and message if username has less than 3 characters', async () => {
+    
+  })
 })
 
 after(async () => {
