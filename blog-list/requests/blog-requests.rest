@@ -6,8 +6,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 { 
-    "title": "pruebas",
-    "author":"folagor",
+    "title": "pruebas5",
+    "author":"holahola",
     "url": "quintis.com",
-    "likes": 66453
+    "likes": 63
 }
