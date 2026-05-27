@@ -4,11 +4,11 @@ GET http://localhost:3003/api/blogs
 ###Add blog 
 POST http://localhost:3003/api/blogs 
 Content-Type: application/json
-Authorization: Bearer 
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1vdXNlYml0ZXMiLCJpZCI6IjZhMGUzZjZkNmUxOWY3MDU2ZGVmMzM0MyIsImlhdCI6MTc3OTg0Nzk1NSwiZXhwIjoxNzc5ODQ5NzU1fQ.MaWCTHdg0fl8lp_zqiYsLNfSaKXwd8gixcjkw1tUHnk
 
 { 
-    "title": "pruebas5",
-    "author":"holahola",
+    "title": "pruebas7",
+    "author":"probando token",
     "url": "quintis.com",
     "likes": 63
 }
