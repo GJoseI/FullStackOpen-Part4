@@ -1,6 +1,9 @@
 ###Get all blogs
 GET http://localhost:3003/api/blogs
 
+###Get one blog
+GET http://localhost:3003/api/blogs/69f6c67e45a695728d3b54cc
+
 ###Add blog 
 POST http://localhost:3003/api/blogs 
 Content-Type: application/json
@@ -12,3 +15,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1vd
     "url": "quintis.com",
     "likes": 63
 }
+
+###Delete Blog
+DELETE http://localhost:3003/api/blogs/6a126488958a59c114fcdede
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1vdXNlYml0ZXMiLCJpZCI6IjZhMGUzZjZkNmUxOWY3MDU2ZGVmMzM0MyIsImlhdCI6MTc3OTkzNDkxOCwiZXhwIjoxNzc5OTM2NzE4fQ.wBWQPrx29X-6jS-l2BzCuvRZc-9bWuqZnPaDhJfzlXw
