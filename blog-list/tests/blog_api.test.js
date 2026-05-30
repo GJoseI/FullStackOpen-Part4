@@ -13,6 +13,7 @@ const api = supertest(app)
 describe('when there is initially some notes saved', () => {
   beforeEach(async () => {
     await Blog.deleteMany({})
+    await User.deleteMany({})
 
     await Blog.insertMany(helper.initialBlogs)
   })
@@ -40,8 +41,21 @@ describe('when there is initially some notes saved', () => {
     }
 
     await api
+      .post('/api/users')
+      .send({ username: 'prueba', password: 'pruebacontra' })
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const login = await api
+      .post('/api/login')
+      .send({ username: 'prueba', password: 'pruebacontra' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${login.body.token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
@@ -61,8 +75,21 @@ describe('when there is initially some notes saved', () => {
     }
 
     await api
+      .post('/api/users')
+      .send({ username: 'prueba', password: 'pruebacontra' })
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const login = await api
+      .post('/api/login')
+      .send({ username: 'prueba', password: 'pruebacontra' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    await api
       .post('/api/blogs')
       .send(newBlog)
+      .set('Authorization', `Bearer ${login.body.token}`)
       .expect(201)
       .expect('Content-Type', /application\/json/)
     const blogsAtEnd = await helper.blogsInDb()
@@ -77,7 +104,24 @@ describe('when there is initially some notes saved', () => {
       url: 'https://homepages.cwi.nl/~storm/teaching/reader/Dijkstra68.pdf',
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(400)
+    await api
+      .post('/api/users')
+      .send({ username: 'prueba', password: 'pruebacontra' })
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const login = await api
+      .post('/api/login')
+      .send({ username: 'prueba', password: 'pruebacontra' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set('Authorization', `Bearer ${login.body.token}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
 
@@ -91,7 +135,24 @@ describe('when there is initially some notes saved', () => {
       likes: 5,
     }
 
-    await api.post('/api/blogs').send(newBlog).expect(400)
+    await api
+      .post('/api/users')
+      .send({ username: 'prueba', password: 'pruebacontra' })
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const login = await api
+      .post('/api/login')
+      .send({ username: 'prueba', password: 'pruebacontra' })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .set('Authorization', `Bearer ${login.body.token}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
 
     const blogsAtEnd = await helper.blogsInDb()
 
@@ -102,9 +163,8 @@ describe('when there is initially some notes saved', () => {
     const blogsAtStart = await helper.blogsInDb()
     const blogToUpdate = blogsAtStart[0]
     const updatedBlog = {
-      likes: 25
+      likes: 25,
     }
-
 
     await api
       .put(`/api/blogs/${blogToUpdate.id}`)
@@ -117,18 +177,69 @@ describe('when there is initially some notes saved', () => {
   })
 
   describe('deletion of a blog', () => {
-    test('succeeds with status code 204 if id is valid', async () => {
-      const blogsAtStart = await helper.blogsInDb()
-      const blogToDelete = blogsAtStart[0]
+    test('succeeds if user created blog', async () => {
+      await api
+        .post('/api/users')
+        .send({ username: 'prueba', password: 'pruebacontra' })
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
 
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204)
+      const login = await api
+        .post('/api/login')
+        .send({ username: 'prueba', password: 'pruebacontra' })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      const newBlog = await api
+        .post('/api/blogs')
+        .send({ title: 'title', author: 'author', url: 'url.com', likes: 5 })
+        .set('Authorization', `Bearer ${login.body.token}`)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = newBlog.body
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${login.body.token}`)
+        .expect(204)
 
       const blogsAtEnd = await helper.blogsInDb()
 
       const ids = blogsAtEnd.map(n => n.id)
       assert(!ids.includes(blogToDelete.id))
 
-      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length - 1)
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
+    })
+
+    test('fails if user did not create blog', async () => {
+      const blogsAtStart = await helper.blogsInDb()
+      const blogToDelete = blogsAtStart[0]
+
+      await api
+        .post('/api/users')
+        .send({ username: 'prueba', password: 'pruebacontra' })
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+
+      const login = await api
+        .post('/api/login')
+        .send({ username: 'prueba', password: 'pruebacontra' })
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+      await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set('Authorization', `Bearer ${login.body.token}`)
+        .expect(500)
+
+      const blogsAtEnd = await helper.blogsInDb()
+
+      const ids = blogsAtEnd.map(n => n.id)
+      assert(ids.includes(blogToDelete.id))
+
+      assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
     })
   })
 })
@@ -240,7 +351,9 @@ describe('when there is initially one user in db', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
     const usersAtEnd = await helper.usersInDb()
-    assert(result.body.error.includes('password should have more than 3 characters'))
+    assert(
+      result.body.error.includes('password should have more than 3 characters'),
+    )
 
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
